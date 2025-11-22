@@ -1,0 +1,6 @@
+Flask
+Dash
+Plotly
+Joblib
+Numpy
+Requests
