@@ -2,6 +2,8 @@ Flask
 dash
 plotly
 numpy
+pandas
+scikit-learn
 joblib
 requests
 gunicorn
