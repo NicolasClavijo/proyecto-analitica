@@ -1,6 +1,7 @@
 Flask
-Dash
-Plotly
-Joblib
-Numpy
-Requests
+dash
+plotly
+numpy
+joblib
+requests
+gunicorn
