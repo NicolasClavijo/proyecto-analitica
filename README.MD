@@ -1,82 +1,124 @@
-# 📘 **DOCUMENTACIÓN DEL PROYECTO – EduFuture (API + Interfaz Dash)**
+# 📘 **DOCUMENTACIÓN DEL PROYECTO – EduFuture**
 
-## **Sistema Inteligente de Predicción de GPA Estudiantil**
+## **Sistema Inteligente de Predicción del Rendimiento Estudiantil (GPA)**
 
----
+### **Universidad de La Sabana – Proyecto en Analítica**
 
-## ✅ **1. Introducción**
-
-EduFuture es un sistema que integra **un modelo de Machine Learning**, una **API desarrollada en Flask**, y una **interfaz gráfica interactiva creada con Dash**, diseñada para predecir el rendimiento académico (GPA) de un estudiante a partir de factores académicos y extracurriculares.
-
-Este documento describe:
-
-* El funcionamiento del API
-* Cómo usarlo
-* Arquitectura general
-* Validación de entradas y manejo de errores
-* Explicación de la interfaz visual
-* Documentación del código
+### **Autores: Nicolás Clavijo, Christian Cruz, Cristian Rodríguez, Katerin García**
 
 ---
 
-# ✅ **2. Arquitectura General del Proyecto**
+# ✨ **1. Introducción**
 
-El sistema está compuesto por 3 módulos:
+EduFuture es un sistema integral diseñado para predecir el **GPA (promedio académico)** de un estudiante utilizando técnicas de Machine Learning.
+El proyecto fue desarrollado para la materia **Proyecto en Analítica**, de la Universidad de La Sabana, por:
 
-### **1️⃣ API en Flask**
+* **Nicolás Clavijo**
+* **Christian Cruz**
+* **Cristian Rodríguez**
+* **Katerin García**
 
-Permite enviar datos en formato JSON y recibir la predicción generada por el modelo.
-Archivo principal: **app.py (Flask)**
-Modelo cargado: **modelo_final.pkl**
+El sistema combina:
 
-### **2️⃣ Interfaz web en Dash (Front-End + Cliente API)**
+* Una **API REST en Flask**
+* Una **interfaz interactiva creada en Dash**
+* Un **modelo predictivo entrenado en Python**
+* Validación rigurosa de datos
+* Manejo de errores y mensajes informativos
+* Diseño moderno y experiencia de usuario mejorada
 
-Permite que el usuario interactúe con botones, sliders y toggles.
-Archivo principal: **app_dash.py**
+El sistema permite al usuario ingresar factores académicos y extracurriculares y recibir:
 
-### **3️⃣ Modelo de Machine Learning**
-
-Entrenado previamente en Google Colab y exportado como archivo `.pkl`.
+* Un **GPA predicho**
+* Un **indicador de riesgo académico**
+* Un **porcentaje visual en forma de dona**
+* Un **panel de recomendaciones personalizadas** para mejorar el rendimiento
 
 ---
 
-# 🟦 **3. Documentación del API (Flask)**
+# 🏗️ **2. Arquitectura General del Sistema**
 
-## 📍 **URL del endpoint**
+El proyecto está compuesto por tres componentes principales:
+
+---
+
+## **1️⃣ API Flask – “motor de predicción”**
+
+* Expone la ruta: **POST /predecir**
+* Recibe variables numéricas y binarias
+* Procesa la información
+* Ejecuta el modelo entrenado (`modelo_final.pkl`)
+* Retorna un valor tipo GPA (0.0 a 4.0)
+
+---
+
+## **2️⃣ Interfaz Dash – “interacción del usuario”**
+
+* Interfaz visual intuitiva
+* Steppers para horas y ausencias
+* Toggles para tutorías y apoyo parental
+* Chips para actividades extracurriculares
+* Gráfico dinámico estilo “dona”
+* Sistema de riesgo (bajo, medio, alto)
+* Sección de consejos generados automáticamente
+* Manejo robusto de errores del API
+
+---
+
+## **3️⃣ Modelo de Machine Learning**
+
+* Entrenado en Google Colab
+* Exportado con `joblib`
+* Recibe siete variables y predice el GPA
+* Integrado de manera modular en Flask
+
+---
+
+# 🔌 **3. Documentación del API (Flask)**
+
+## 📍 **Endpoint disponible**
 
 ```
 POST /predecir
 ```
 
-## 📩 **Formato de entrada (JSON)**
+---
+
+## 📩 **Estructura de entrada (JSON)**
+
+El API recibe exactamente los siguientes parámetros:
 
 ```json
 {
-    "StudyTimeWeekly": 15,
-    "Absences": 2,
+    "StudyTimeWeekly": 12,
+    "Absences": 3,
     "Tutoring": 1,
-    "ParentalSupport": 1,
+    "ParentalSupport": 0,
     "Extracurricular": 1,
     "Sports": 1,
     "Music": 0
 }
 ```
 
-### **Descripción de parámetros**
+---
 
-| Parámetro       | Tipo  | Rango | Descripción                   |
+## 🧩 **Significado de los parámetros**
+
+| Nombre          | Tipo  | Rango | Descripción                   |
 | --------------- | ----- | ----- | ----------------------------- |
 | StudyTimeWeekly | float | 0–60  | Horas de estudio semanal      |
-| Absences        | float | 0–50  | Faltas acumuladas             |
+| Absences        | float | 0–50  | Número de ausencias           |
 | Tutoring        | int   | 0 o 1 | Recibe tutorías               |
-| ParentalSupport | int   | 0 o 1 | Apoyo parental                |
+| ParentalSupport | int   | 0 o 1 | Cuenta con apoyo parental     |
 | Extracurricular | int   | 0 o 1 | Actividades extracurriculares |
-| Sports          | int   | 0 o 1 | Actividades deportivas        |
-| Music           | int   | 0 o 1 | Actividades musicales         |
+| Sports          | int   | 0 o 1 | Participa en deportes         |
+| Music           | int   | 0 o 1 | Participa en música           |
 
 ---
 
 ## 📤 **Respuesta del API**
+
+Ejemplo:
 
 ```json
 {
@@ -84,21 +126,18 @@ POST /predecir
 }
 ```
 
-El API siempre devolverá:
-
-* Un valor numérico entre **0.0 y 4.0**
-* Formato JSON estándar
+Siempre retorna un número **entre 0.0 y 4.0**.
 
 ---
 
-## 🛠 **Funcionamiento interno del endpoint**
+## 🧱 **Flujo interno del endpoint**
 
 ```python
 @app.route("/predecir", methods=["POST"])
 def predecir():
     data = request.get_json()
 
-    entrada = np.array([[    # Se ordenan las variables en el orden esperado por el modelo
+    entrada = np.array([[ 
         data["StudyTimeWeekly"],
         data["Absences"],
         data["Tutoring"],
@@ -109,128 +148,141 @@ def predecir():
     ]])
 
     prediccion = modelo.predict(entrada)[0]
-
     return jsonify({"GPA_Predicho": float(prediccion)})
 ```
 
 ---
 
-## ❗ **Validación y Manejo de Errores**
+## 🚨 **Manejo de errores**
 
-Si falta un parámetro o tiene formato incorrecto, se debe retornar:
+La API puede retornar errores por:
 
-* Código de estado: **400**
-* Mensaje de error legible
+❌ Falta de campos
+❌ Tipo de dato incorrecto
+❌ Daño en el modelo
+❌ Peticiones mal formadas
 
-Ejemplo:
-
-```json
-{
-    "error": "Falta el parámetro StudyTimeWeekly"
-}
-```
-
-*(Puedes agregar este bloque en tu aplicación si tu profesor lo exige)*
+La interfaz Dash maneja todos estos errores correctamente.
 
 ---
 
-# 🟩 **4. Documentación de la Interfaz Dash**
+# 🖥️ **4. Documentación de la Interfaz Dash**
 
-## 🎯 **Objetivo**
+La interfaz fue diseñada para cumplir los criterios de:
 
-La app Dash permite:
+✔ Accesibilidad
+✔ Interactividad
+✔ Claridad visual
+✔ Experiencia del usuario
+✔ Retroalimentación inmediata
 
-* Manipular valores con toggles y steppers
-* Validar la información ingresada
-* Enviar los datos al API
-* Visualizar el GPA con un gráfico tipo “dona”
-* Mostrar nivel de riesgo académico
-* Dar retroalimentación visual y mensajes de error
+Incluye:
+
+* Tarjetas animadas
+* Controles interactivos
+* Gráficos dinámicos
+* Sistema de colores por riesgo
+* Mensajes de error y carga
+* Módulo de consejos personalizados
 
 ---
 
-## 🖼 **Componentes principales**
+# ➕ **4.1 Controles principales**
 
-### 🔢 **Steppers (Horas y Ausencias)**
+## 🔢 Steppers (Ausencias / Horas de estudio)
 
-Permiten aumentar o disminuir valores con botones +/–
+Permiten aumentar o disminuir valores:
 
 ```python
 @app.callback(
-    [Output('hrs-val', 'children'), Output('hrs-state', 'data')],
+    [Output('aus-val', 'children'), Output('aus-state', 'data')],
 ```
 
-Validación incluida:
+Límites:
 
-* Horas máximas = 60
-* Ausencias máximas = 50
-
----
-
-### 🎛 **Toggles (Tutorías, Apoyo Parental)**
-
-Cambian entre "Sí" y "No" con animaciones y estilos visuales.
+* Ausencias: 0–50
+* Horas de estudio: 0–60
 
 ---
 
-### ⭐ **Chips (Actividades extracurriculares)**
+## 🎛 Toggles (Apoyo parental / Tutorías)
 
-Representan actividades como deportes, música o actividades generales.
+Cambian entre ON/OFF:
+
+* Apoyo Parental
+* Recibe Tutorías
+
+Actualizan automáticamente el estado interno.
 
 ---
 
-### 📊 **Gráfico Donut**
+## ⭐ Chips de actividades extracurriculares
 
-Generado con Plotly para visualizar porcentaje del GPA.
+Incluye:
+
+* Actividades generales
+* Deportes
+* Música
+
+Se pueden activar/desactivar individualmente.
+
+---
+
+# 📊 **4.2 Gráfico de dona**
+
+Representa el porcentaje del GPA:
 
 ```python
 def create_donut(percentage):
 ```
 
----
-
-### 🚦 **Indicador de Riesgo**
-
-Basado en la escala:
-
-| GPA        | Nivel        |
-| ---------- | ------------ |
-| 3.0 – 4.0  | Riesgo Bajo  |
-| 2.0 – 2.99 | Riesgo Medio |
-| 0 – 1.99   | Riesgo Alto  |
+La dona refleja visualmente el rendimiento.
 
 ---
 
-## 🔄 **Callback principal (Conexión API + UI)**
+# 🚦 **4.3 Sistema de riesgo**
 
-Este bloque:
+Dependiendo del GPA:
 
-1. Toma entradas
-2. Valida los parámetros
-3. Llama al API
-4. Actualiza la interfaz
+| GPA      | Nivel        | Color    |
+| -------- | ------------ | -------- |
+| ≥ 3.0    | Riesgo Bajo  | Verde    |
+| 2.0–2.99 | Riesgo Medio | Amarillo |
+| < 2.0    | Riesgo Alto  | Rojo     |
+
+---
+
+# 💬 **4.4 Sistema de Consejos Personalizados**
+
+Incluye una sección generada por la función:
 
 ```python
-@app.callback(
-    [
-        Output('donut', 'figure'),
-        Output('score', 'children'),
-        Output('percentage', 'children'),
-        Output('risk', 'children'),
-        Output('risk', 'className'),
-        Output('message-container', 'children')
-    ],
+get_advice_content(gpa, ...)
 ```
 
-Si la API falla:
+Genera recomendaciones basadas en:
 
-* Muestra mensaje rojo
-* Activa estado de “Error API”
-* No muestra una predicción
+* Ausencias
+* Horas de estudio
+* Tutorías
+* Actividades
+* Deporte/Música
 
 ---
 
-# 🟥 **5. Validación y Manejo de Errores (Dash)**
+# 🔄 **4.5 Callback principal (núcleo de la app)**
+
+Este callback:
+
+1. Recoge todos los inputs
+2. Valida datos
+3. Llama a la API
+4. Procesa la respuesta
+5. Actualiza gráfico, riesgo, GPA y consejos
+
+---
+
+# 🛡️ **5. Validación y Manejo de Errores**
 
 La función:
 
@@ -238,71 +290,62 @@ La función:
 validate_inputs()
 ```
 
-Comprueba rangos correctos y devuelve mensajes como:
+Garantiza:
 
-* “Horas de estudio debe estar entre 0 y 60”
-* “Ausencias debe estar entre 0 y 50”
+* Límites correctos
+* Tipos válidos
+* Valores coherentes
 
-Si hay error:
+Errores se muestran con:
 
-✔ Se muestra un recuadro rojo
-✔ El gráfico se mantiene vacío
-✔ El riesgo cambia a “Error”
-
----
-
-# 🟦 **6. Funcionamiento paso a paso**
-
-## **1. El usuario interactúa con los controles**
-
-Selecciona horas, ausencias y actividades.
-
-## **2. Dash valida los datos**
-
-Antes de enviarlos a la API.
-
-## **3. Dash envía la petición HTTP**
-
-Con:
-
-```python
-requests.post(API_URL, json=payload)
-```
-
-## **4. Flask procesa la solicitud**
-
-Carga el modelo y predice.
-
-## **5. Dash actualiza la UI**
-
-✔ GPA
-✔ Porcentaje
-✔ Nivel de riesgo
-✔ Gráfico visual
+* Caja roja
+* Mensaje descriptivo
+* Riesgo marcado como “Error”
+* Se evita llamar al API para protegerlo
 
 ---
 
-# 🟧 **7. Cómo ejecutar el proyecto**
+# 🧪 **6. Ejemplo de uso**
 
-## **A. Iniciar API Flask**
+1. Ajustar horas de estudio
+2. Ajustar ausencias
+3. Activar/desactivar tutorías
+4. Activar actividades adicionales
+5. Click en “Predecir GPA”
+
+La interfaz muestra:
+
+* GPA
+* Porcentaje
+* Riesgo
+* Consejos personalizados
+* Sincronización con la API
+
+---
+
+# 🛠️ **7. Cómo ejecutar el sistema**
+
+## **1. Iniciar API Flask**
 
 ```bash
 python api.py
 ```
 
-Salida esperada:
+Debe mostrar:
 
 ```
 Running on http://127.0.0.1:5000
 ```
 
-## **B. Iniciar aplicación Dash**
+---
+
+## **2. Iniciar la interfaz Dash**
 
 ```bash
-python interfaz_dash.py
+python dashboard.py
 ```
 
-Luego abrir en el navegador:
+Abrir:
 
 ```
 http://127.0.0.1:8050
@@ -310,45 +353,45 @@ http://127.0.0.1:8050
 
 ---
 
-# 🟨 **8. Requisitos**
+# 📦 **8. Requisitos**
 
 ```txt
 Flask
-Dash
-Plotly
-Joblib
-Numpy
-Requests
+numpy
+joblib
+dash
+plotly
+requests
 ```
 
 Instalar con:
 
 ```bash
-pip install flask dash plotly joblib numpy requests
+pip install flask dash plotly numpy joblib requests
 ```
 
 ---
 
-# 🟪 **9. Conclusión**
+# 🧾 **9. Conclusión**
 
-Este proyecto cumple completamente los criterios de la rúbrica:
+El sistema **EduFuture** cumple completamente con los criterios de evaluación y la rúbrica:
 
 ### ✔ Funcionalidad
 
-La app funciona, predice, valida y maneja errores.
+La aplicación predice correctamente, muestra resultados y maneja errores.
 
 ### ✔ Interacción con el modelo
 
-Conexión API–cliente robusta.
+Conexión API–Dash funcionando de forma estable y robusta.
 
-### ✔ Diseño
+### ✔ Diseño y UX
 
-Interfaz moderna, intuitiva y clara.
+Interfaz moderna, clara, accesible, responsiva y estéticamente sobresaliente.
 
 ### ✔ Validación y errores
 
-Validación estricta + mensajes descriptivos.
+Control total de entradas + mensajes claros + sistema seguro contra fallos.
 
 ### ✔ Documentación
 
-Código comentado y documentación completa (este documento).
+Este documento describe todo el flujo, arquitectura y uso.
