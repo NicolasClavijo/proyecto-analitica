@@ -356,6 +356,99 @@ app.index_string = '''
             border: 1px solid rgba(99, 102, 241, 0.3);
         }
         
+        /* Advice Section */
+        .advice-card {
+            background: rgba(31, 41, 55, 0.6);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: 28px;
+            padding: 40px;
+            margin-top: 48px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4),
+                        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .advice-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5),
+                        0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+        }
+        
+        .advice-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        
+        .advice-icon {
+            font-size: 48px;
+            filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.3));
+        }
+        
+        .advice-title {
+            font-size: clamp(20px, 4vw, 26px);
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.03em;
+        }
+        
+        .advice-content {
+            color: #d1d5db;
+            font-size: clamp(14px, 2.5vw, 16px);
+            line-height: 1.75;
+            margin-bottom: 24px;
+        }
+        
+        .advice-list {
+            list-style: none;
+            padding: 0;
+            margin: 28px 0;
+        }
+        
+        .advice-list li {
+            padding: 16px 20px;
+            margin-bottom: 14px;
+            background: rgba(55, 65, 81, 0.4);
+            border-radius: 16px;
+            border-left: 4px solid #6366f1;
+            color: #e5e7eb;
+            font-size: clamp(13px, 2.5vw, 15px);
+            line-height: 1.6;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .advice-list li:hover {
+            background: rgba(75, 85, 99, 0.5);
+            transform: translateX(8px);
+            border-left-color: #8b5cf6;
+        }
+        
+        .advice-list li:last-child {
+            margin-bottom: 0;
+        }
+        
+        .advice-list li strong {
+            color: #fff;
+            font-weight: 700;
+        }
+        
+        .congrats-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+            color: #10b981;
+            font-size: clamp(13px, 2.5vw, 15px);
+            font-weight: 700;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            margin-top: 16px;
+        }
+        
         /* Section Title */
         .section-title {
             font-size: clamp(22px, 4vw, 28px);
@@ -787,6 +880,74 @@ def validate_inputs(hrs, aus, tut, ap, gen, dep, mus):
         return False, "Música debe ser 0 o 1"
     return True, "OK"
 
+def get_advice_content(gpa, aus, hrs, tut, ap, gen, dep, mus):
+    """
+    Genera consejos personalizados basados en el GPA y los factores del estudiante.
+    
+    Returns:
+        dict: Contiene icon, title, message y tips
+    """
+    if gpa >= 3.5:
+        return {
+            'icon': '🎉',
+            'title': '¡Excelente Rendimiento!',
+            'message': '¡Felicidades! Tu GPA predicho refleja un rendimiento sobresaliente. Estás en el camino correcto hacia el éxito académico. Mantén este impulso y sigue desarrollando tus fortalezas.',
+            'tips': [
+                '<strong>Mantén la consistencia:</strong> Tu rutina actual está funcionando perfectamente. Continúa con tus hábitos de estudio.',
+                '<strong>Desafíate a ti mismo:</strong> Considera tomar cursos avanzados o participar en proyectos de investigación.',
+                '<strong>Comparte tu conocimiento:</strong> Ayuda a otros estudiantes como tutor o mentor, esto reforzará tu aprendizaje.',
+                '<strong>Desarrolla habilidades complementarias:</strong> Explora áreas fuera de tu zona de confort para un crecimiento integral.',
+                '<strong>Cuida tu bienestar:</strong> No olvides mantener un equilibrio saludable entre estudio, actividades y descanso.'
+            ],
+            'badge': '🏆 Estudiante Destacado'
+        }
+    elif gpa >= 3.0:
+        return {
+            'icon': '👍',
+            'title': 'Buen Rendimiento',
+            'message': '¡Muy bien! Tu GPA predicho muestra un rendimiento sólido. Estás haciendo las cosas correctamente y tienes el potencial para alcanzar niveles aún más altos con algunos ajustes estratégicos.',
+            'tips': [
+                '<strong>Optimiza tu tiempo de estudio:</strong> Considera aumentar gradualmente tus horas de estudio semanales para consolidar conceptos.',
+                '<strong>Reduce ausencias:</strong> Cada clase cuenta. Intenta asistir a todas tus sesiones para no perderte contenido clave.',
+                '<strong>Aprovecha los recursos:</strong> Si no lo haces, considera solicitar tutorías o apoyo académico adicional.',
+                '<strong>Participa activamente:</strong> Involúcrate más en actividades extracurriculares para desarrollo integral.',
+                '<strong>Establece metas específicas:</strong> Define objetivos claros para cada materia y trabaja consistentemente hacia ellos.'
+            ],
+            'badge': '⭐ Buen Estudiante'
+        }
+    elif gpa >= 2.0:
+        return {
+            'icon': '💪',
+            'title': 'Área de Oportunidad',
+            'message': 'Tu GPA predicho indica que hay espacio significativo para mejorar. No te desanimes, con los ajustes correctos y dedicación puedes mejorar considerablemente tu rendimiento académico.',
+            'tips': [
+                '<strong>Incrementa tus horas de estudio:</strong> Dedica más tiempo al estudio semanal, especialmente en materias difíciles.',
+                '<strong>Asiste a clases regularmente:</strong> Las ausencias impactan tu aprendizaje. Prioriza tu asistencia.',
+                '<strong>Busca apoyo académico:</strong> Las tutorías pueden hacer una gran diferencia. No dudes en pedir ayuda.',
+                '<strong>Mejora tu organización:</strong> Crea un horario de estudio estructurado y síguelo consistentemente.',
+                '<strong>Comunícate con tus padres/tutores:</strong> El apoyo familiar es fundamental para tu éxito académico.',
+                '<strong>Participa en actividades:</strong> Las actividades extracurriculares pueden mejorar tu motivación y habilidades.'
+            ],
+            'badge': '🎯 En Mejora'
+        }
+    else:
+        return {
+            'icon': '🚨',
+            'title': 'Atención Requerida',
+            'message': 'Tu GPA predicho indica una situación que requiere atención inmediata. Es momento de hacer cambios significativos en tu enfoque académico. ¡Pero no te preocupes! Con el plan correcto y apoyo adecuado, puedes revertir esta situación.',
+            'tips': [
+                '<strong>Acción inmediata:</strong> Habla con tus profesores y consejero académico para crear un plan de acción personalizado.',
+                '<strong>Prioriza la asistencia:</strong> Elimina las ausencias innecesarias. Cada clase es crucial para tu aprendizaje.',
+                '<strong>Duplica tu tiempo de estudio:</strong> Necesitas dedicar significativamente más horas al estudio estructurado.',
+                '<strong>Solicita tutorías urgentemente:</strong> El apoyo académico individualizado puede marcar la diferencia.',
+                '<strong>Involucra a tu familia:</strong> El apoyo parental es esencial. Comparte tu situación y trabaja en equipo.',
+                '<strong>Revisa tus métodos de estudio:</strong> Puede que necesites aprender nuevas técnicas de estudio más efectivas.',
+                '<strong>Establece metas pequeñas:</strong> Mejora paso a paso. Celebra cada pequeño logro en el camino.',
+                '<strong>Cuida tu salud mental:</strong> Si enfrentas desafíos personales, busca apoyo de orientación estudiantil.'
+            ],
+            'badge': '⚠️ Necesita Apoyo'
+        }
+
 def call_prediction_api(study_time, absences, tutoring, parental_support, 
                         extracurricular, sports, music):
     """
@@ -941,6 +1102,9 @@ app.layout = html.Div(className='container', children=[
         html.Button('Predecir GPA', id='update', className='btn-primary')
     ]),
     
+    # Sección de consejos (inicialmente vacía)
+    html.Div(id='advice-section', children=[]),
+    
     # Stores para mantener el estado
     dcc.Store(id='aus-state', data=2),
     dcc.Store(id='hrs-state', data=15),
@@ -1050,7 +1214,8 @@ def toggle_musica(n, state):
      Output('percentage', 'children'),
      Output('risk', 'children'),
      Output('risk', 'className'),
-     Output('message-container', 'children')],
+     Output('message-container', 'children'),
+     Output('advice-section', 'children')],
     [Input('update', 'n_clicks')],
     [State('aus-state', 'data'),
      State('hrs-state', 'data'),
@@ -1071,6 +1236,7 @@ def predict_gpa(n, aus, hrs, ap, tut, gen, dep, mus):
             '--',
             [html.Div(className='risk-indicator'), html.Span('Sin Predicción')],
             'risk risk-medium',
+            [],
             []
         )
     
@@ -1091,7 +1257,8 @@ def predict_gpa(n, aus, hrs, ap, tut, gen, dep, mus):
             '--',
             [html.Div(className='risk-indicator'), html.Span('Error')],
             'risk risk-high',
-            error_msg
+            error_msg,
+            []
         )
     
     # Llamar a la API
@@ -1114,7 +1281,8 @@ def predict_gpa(n, aus, hrs, ap, tut, gen, dep, mus):
             '--',
             [html.Div(className='risk-indicator'), html.Span('Error API')],
             'risk risk-high',
-            error_msg
+            error_msg,
+            []
         )
     
     # Predicción exitosa
@@ -1137,13 +1305,50 @@ def predict_gpa(n, aus, hrs, ap, tut, gen, dep, mus):
         risk_txt = [html.Div(className='risk-indicator'), html.Span('Riesgo Alto')]
         risk_cls = 'risk risk-high'
     
+    # Generar consejos personalizados
+    advice = get_advice_content(gpa, aus, hrs, tut, ap, gen, dep, mus)
+    
+    # Crear lista de consejos en HTML sin usar dangerously_allow_html
+    tips_html = []
+    for tip in advice['tips']:
+        # Parsear el HTML manualmente
+        if '<strong>' in tip:
+            parts = tip.split('</strong>')
+            if len(parts) >= 2:
+                bold_part = parts[0].replace('<strong>', '')
+                rest_part = parts[1]
+                tips_html.append(
+                    html.Li([
+                        html.Strong(bold_part),
+                        html.Span(rest_part)
+                    ])
+                )
+            else:
+                tips_html.append(html.Li(tip))
+        else:
+            tips_html.append(html.Li(tip))
+    
+    advice_component = html.Div(className='advice-card', children=[
+        html.Div(className='advice-header', children=[
+            html.Div(advice['icon'], className='advice-icon'),
+            html.H3(advice['title'], className='advice-title')
+        ]),
+        html.P(advice['message'], className='advice-content'),
+        html.Ul(className='advice-list', children=tips_html),
+        html.Div(className='congrats-badge', children=[
+            html.Span('🎓'),
+            html.Span(advice['badge'])
+        ])
+    ])
+    
     return (
         create_donut(percentage),
         f'{gpa:.2f}',
         f'{percentage}%',
         risk_txt,
         risk_cls,
-        []
+        [],
+        advice_component
     )
 
 if __name__ == '__main__':
